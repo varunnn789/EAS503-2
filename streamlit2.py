@@ -4,6 +4,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+API_URL = "http://146.190.78.32:8080"
+
 st.title('Heart Disease Prediction App')
 
 # Input fields
@@ -49,7 +51,7 @@ if st.button('Predict'):
 
     try:
         # Make prediction
-        response = requests.post("http://localhost:8080/predict", json=input_data)
+        response = requests.post(f"{API_URL}/predict", json=input_data)
         result = response.json()
 
         # Display prediction
@@ -129,8 +131,8 @@ if st.button('Predict'):
                           title='Presence of Risk Factors')
         st.plotly_chart(fig_risk)
 
-    except requests.exceptions.ConnectionError:
-        st.error("Connection error: Unable to connect to the prediction server. Please make sure the server is running and accessible.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error connecting to the prediction server: {str(e)}")
 
 st.sidebar.header('About')
 st.sidebar.info('This app predicts the likelihood of heart disease based on various health factors.')
