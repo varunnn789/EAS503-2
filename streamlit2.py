@@ -208,6 +208,7 @@ if st.sidebar.button('Predict', use_container_width=True):
             ))
             st.plotly_chart(fig_sleep, key="sleep_chart")
 
+
         # Health Days Visualization
         health_data = pd.DataFrame({
             'Category': ['Good Physical Health', 'Poor Physical Health', 'Good Mental Health', 'Poor Mental Health'],
@@ -216,20 +217,37 @@ if st.sidebar.button('Predict', use_container_width=True):
         fig_health = px.bar(health_data, x='Category', y='Days', color='Category', title='Physical and Mental Health Days in the Last Month')
         st.plotly_chart(fig_health, key="health_days_chart")
 
-        # Risk Factors Visualization
 
+        # Risk Factors Visualization
         risk_factors = ['Alcohol Drinker', 'Diabetes', 'Skin Cancer', 'Kidney Disease', 'High Risk Last Year']
         risk_values = [alcohol_drinkers, had_diabetes, had_skin_cancer, had_kidney_disease, high_risk_last_year]
-
-        # Filter out only the selected risk factors
-        selected_risks = [(factor, value) for factor, value in zip(risk_factors, risk_values) if value]
-
+        # Create a list of tuples for selected risk factors only
+        selected_risks = [(factor, 1) for factor, value in zip(risk_factors, risk_values) if value]
         if selected_risks:
+            # Create DataFrame with only the selected risks
             risk_data = pd.DataFrame(selected_risks, columns=['Factor', 'Present'])
-            fig_risk = px.bar(risk_data, x='Factor', y='Present', color='Factor', title='Present Risk Factors')
+            
+            # Create bar chart with custom colors and layout
+            fig_risk = px.bar(
+                risk_data, 
+                x='Factor', 
+                y='Present',
+                title='Present Risk Factors',
+                color='Factor',
+                height=400
+            )
+            
+            # Update layout to make it more readable
+            fig_risk.update_layout(
+                showlegend=True,
+                yaxis_visible=False,
+                yaxis_showticklabels=False
+            )
+            
             st.plotly_chart(fig_risk, key="risk_factors_chart")
         else:
             st.write("No risk factors selected.")
+
 
     except requests.exceptions.RequestException as e:
         st.error(f"Error connecting to the prediction server: {str(e)}")
