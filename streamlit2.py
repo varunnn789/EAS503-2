@@ -137,3 +137,4 @@ def predict_heart_disease():
 if __name__ == '__main__':
     st.title('Heart Disease Prediction App')
     predict_heart_disease()
+    
