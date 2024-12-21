@@ -220,9 +220,16 @@ if st.sidebar.button('Predict', use_container_width=True):
 
         risk_factors = ['Alcohol Drinker', 'Diabetes', 'Skin Cancer', 'Kidney Disease', 'High Risk Last Year']
         risk_values = [alcohol_drinkers, had_diabetes, had_skin_cancer, had_kidney_disease, high_risk_last_year]
-        risk_data = pd.DataFrame({'Factor': risk_factors, 'Present': risk_values})
-        fig_risk = px.bar(risk_data, x='Factor', y='Present', color='Present', title='Presence of Risk Factors')
-        st.plotly_chart(fig_risk, key="risk_factors_chart")
+
+        # Filter out only the selected risk factors
+        selected_risks = [(factor, value) for factor, value in zip(risk_factors, risk_values) if value]
+
+        if selected_risks:
+            risk_data = pd.DataFrame(selected_risks, columns=['Factor', 'Present'])
+            fig_risk = px.bar(risk_data, x='Factor', y='Present', color='Factor', title='Present Risk Factors')
+            st.plotly_chart(fig_risk, key="risk_factors_chart")
+        else:
+            st.write("No risk factors selected.")
 
     except requests.exceptions.RequestException as e:
         st.error(f"Error connecting to the prediction server: {str(e)}")
