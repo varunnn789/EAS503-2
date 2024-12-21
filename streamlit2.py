@@ -49,7 +49,7 @@ if st.button('Predict'):
 
     try:
         # Make prediction
-        response = requests.post("http://localhost:8000/predict", json=input_data)
+        response = requests.post("http://localhost:8080/predict", json=input_data)
         result = response.json()
 
         # Display prediction
